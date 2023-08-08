@@ -5,18 +5,15 @@ using UnityEngine.Events;
 public class Player : MonoBehaviour
 {
 	public UnityEvent<int> OnBulletChange = new UnityEvent<int>();
-	public bool Grounded { set; get; }
 
 	[SerializeField] private Transform _head;
 	[SerializeField] private Transform _body;
-	[SerializeField] private CharacterController _characterController;
+	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] private float _speed = 5f;
 	[SerializeField] private float _cooldown = 0.5f;
 	[SerializeField] private float _reloadTime = 3f;
 	[SerializeField] private float _damage = 5f;
 	[SerializeField] private int _bulletMax = 18;
-	[SerializeField] private float _jumpForce = 18f;
-	[SerializeField] private float _gravityValue = -9.81f;
 	[SerializeField] private Transform _hitStart;
 
 	private Vector3 moveVector = Vector3.zero;
@@ -69,29 +66,9 @@ public class Player : MonoBehaviour
 		moveVector += transform.right * moveInput.x;
 		moveVector.Normalize();
 
-		//Симуляция гравитации
-		if (Grounded)
-		{
-			if (_yVelosity < 0)
-				_yVelosity = 0f;
-		}
-		else
-		{
-			_yVelosity += Time.deltaTime * _gravityValue;
-		}
+		//moveVector.y = _yVelosity;
 
-
-		moveVector.y = _yVelosity;
-
-		_characterController.Move(_speed * Time.deltaTime * moveVector);
-	}
-
-
-
-	public void Jump()
-	{
-		if (Grounded)
-			_yVelosity += _jumpForce;
+		_rb.velocity = _speed * moveVector;
 	}
 
 	public void RotateX(float value)
@@ -108,10 +85,5 @@ public class Player : MonoBehaviour
 	{
 		_bulletCurrent = _bulletMax;
 		OnBulletChange.Invoke(_bulletCurrent);
-	}
-
-	private void OnDestroy()
-	{
-		StopAllCoroutines();
 	}
 }

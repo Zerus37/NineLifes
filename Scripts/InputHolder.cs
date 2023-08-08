@@ -18,7 +18,7 @@ public class InputHolder : MonoBehaviour
     {
         _recoilOn = PlayerPrefs.GetInt("recoilOn", 1) == 1;
 
-        _gameState = new GameState(_player, _cam, _mouseSensetivity, _recoilOn);
+        _gameState = new GameState(_player, _mouseSensetivity, _recoilOn);
         _menuState = new MenuState(_menuPopup);
 
         _stateMachine = new StateMachine();
@@ -49,5 +49,10 @@ public class InputHolder : MonoBehaviour
         }
 
         _stateMachine.CurrentState.Update();
+    }
+
+	void FixedUpdate()
+    {
+        _stateMachine.CurrentState.FixedUpdate();
     }
 }
