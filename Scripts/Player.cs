@@ -29,11 +29,11 @@ public class Player : MonoBehaviour
 	}
 
 	//Этот апдейт надо вызывать из другого апдейта в монобехе, вызывается в GameState
-	public void PausedUpdate()
+	public void PausableUpdate()
 	{
 		if (_targetRotateX < 0)
 		{
-			_head.localRotation = Quaternion.Euler(Mathf.Lerp(_head.rotation.x, _targetRotateX*2, 0.25f), 0, 0);
+			_head.localRotation = Quaternion.Euler(_targetRotateX, 0, 0);
 			_targetRotateX = Mathf.Clamp(Mathf.Lerp(_targetRotateX, 0, Time.deltaTime*4)+0.0002f, -45f, 0f);
 		}
 
@@ -54,7 +54,6 @@ public class Player : MonoBehaviour
 				Invoke(nameof(Reload), _reloadTime);
 
 			RaycastHit2D hit = Physics2D.Raycast(_hitStart.position, transform.forward);
-
 			if (hit.collider != null && hit.collider.TryGetComponent<Life>(out Life victim))
 			{
 				victim.TakeDamage(_damage);

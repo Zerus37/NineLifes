@@ -29,9 +29,7 @@ public class GameState : State
 
 	public override void Update()
 	{
-		_player.PausedUpdate();
-
-		//_player.RotateX(-Input.GetAxis("Mouse Y") * _mouseSensetivity);
+		_player.PausableUpdate();
 		_player.RotateY(Input.GetAxis("Mouse X") * _mouseSensetivity);
 
 		if (Input.GetMouseButton(0))
