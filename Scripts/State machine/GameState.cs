@@ -29,7 +29,9 @@ public class GameState : State
 
 	public override void Update()
 	{
-		_player.RotateX(-Input.GetAxis("Mouse Y") * _mouseSensetivity);
+		_player.PausedUpdate();
+
+		//_player.RotateX(-Input.GetAxis("Mouse Y") * _mouseSensetivity);
 		_player.RotateY(Input.GetAxis("Mouse X") * _mouseSensetivity);
 
 		if (Input.GetMouseButton(0))
@@ -50,7 +52,7 @@ public class GameState : State
 
 	private void SimulateRecoil()
 	{
-		_player.RotateX(-Random.Range(1f, 6f));
+		_player.RotateX(-Random.Range(2f, 8f));
 		_player.RotateY(-Random.Range(-2f, 2f));
 	}
 }

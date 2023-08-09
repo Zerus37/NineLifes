@@ -19,7 +19,8 @@ public class Player : MonoBehaviour
 	private Vector3 moveVector = Vector3.zero;
 	private float _currentCooldown = 0f;
 	private int _bulletCurrent;
-	private float _yVelosity = 0;
+
+	private float _targetRotateX = 0;
 
 	private void Awake()
 	{
@@ -27,8 +28,15 @@ public class Player : MonoBehaviour
 		OnBulletChange.Invoke(_bulletCurrent);
 	}
 
-	private void Update()
+	//Этот апдейт надо вызывать из другого апдейта в монобехе, вызывается в GameState
+	public void PausedUpdate()
 	{
+		if (_targetRotateX < 0)
+		{
+			_head.localRotation = Quaternion.Euler(Mathf.Lerp(_head.rotation.x, _targetRotateX*2, 0.25f), 0, 0);
+			_targetRotateX = Mathf.Clamp(Mathf.Lerp(_targetRotateX, 0, Time.deltaTime*4)+0.0002f, -45f, 0f);
+		}
+
 		if (_currentCooldown > 0)
 			_currentCooldown -= Time.deltaTime;
 	}
@@ -45,13 +53,14 @@ public class Player : MonoBehaviour
 			if (_bulletCurrent <= 0)
 				Invoke(nameof(Reload), _reloadTime);
 
-			RaycastHit hit;
-			if (Physics.Raycast(_hitStart.position, _hitStart.forward, out hit, Mathf.Infinity, 1))
+			RaycastHit2D hit = Physics2D.Raycast(_hitStart.position, transform.forward);
+			if (hit.collider != null)
+				Debug.Log(hit.collider.gameObject.name);
+
+
+			if (hit.collider != null && hit.collider.TryGetComponent<Life>(out Life victim))
 			{
-				if (hit.collider.TryGetComponent<Life>(out Life victim))
-				{
-					victim.TakeDamage(_damage);
-				}
+				victim.TakeDamage(_damage);
 			}
 
 			return true;
@@ -66,14 +75,12 @@ public class Player : MonoBehaviour
 		moveVector += transform.right * moveInput.x;
 		moveVector.Normalize();
 
-		//moveVector.y = _yVelosity;
-
 		_rb.velocity = _speed * moveVector;
 	}
 
 	public void RotateX(float value)
 	{
-		_head.Rotate(value, 0, 0);
+		_targetRotateX += value;
 	}
 
 	public void RotateY(float value)
