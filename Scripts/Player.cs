@@ -54,9 +54,6 @@ public class Player : MonoBehaviour
 				Invoke(nameof(Reload), _reloadTime);
 
 			RaycastHit2D hit = Physics2D.Raycast(_hitStart.position, transform.forward);
-			if (hit.collider != null)
-				Debug.Log(hit.collider.gameObject.name);
-
 
 			if (hit.collider != null && hit.collider.TryGetComponent<Life>(out Life victim))
 			{
